@@ -16,9 +16,10 @@ class LoginController extends Controller
     public function handleProviderCallback($provider){
 
         $socialiteUser=Socialite::driver($provider)->user();
-        $user= User::firstorcreate(
+        $user= User::firstOrCreate(
            [
-               'provider_id'=> $socialiteUser->getid(),
+               'provider'=>$provider,
+               'provider_id'=> $socialiteUser->getId(),
            ],
            [
                'email'=> $socialiteUser->getEmail(),
@@ -27,6 +28,8 @@ class LoginController extends Controller
             
 
         );
+        auth()->login($user,true);
+        return redirect('dashboard');
 
     }
 }
